@@ -102,13 +102,27 @@ class WorkspaceResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> WorkspaceInfo:
         """Creates a new Google Workspace simulation instance with pre-populated data"""
-        return self._post(
-            "/workspace",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=WorkspaceInfo,
+        # Custom response handler for workspace manager format
+        import httpx
+        
+        # Build the request manually to handle custom response format
+        request_options = make_request_options(
+            extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
         )
+        
+        # Get the raw HTTP response
+        with httpx.Client(base_url=self._client.base_url, headers=self._client.default_headers, timeout=self._client.timeout) as http_client:
+            http_response = http_client.post("/workspaces", json={})
+            response_data = http_response.json()
+        
+        # Extract workspace data from nested response
+        if isinstance(response_data, dict) and "workspace" in response_data:
+            workspace_data = response_data["workspace"]
+        else:
+            workspace_data = response_data
+            
+        # Convert to WorkspaceInfo model
+        return WorkspaceInfo.model_validate(workspace_data)
 
     def retrieve(
         self,
@@ -262,13 +276,27 @@ class AsyncWorkspaceResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> WorkspaceInfo:
         """Creates a new Google Workspace simulation instance with pre-populated data"""
-        return await self._post(
-            "/workspace",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=WorkspaceInfo,
+        # Custom response handler for workspace manager format
+        import httpx
+        
+        # Build the request manually to handle custom response format
+        request_options = make_request_options(
+            extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
         )
+        
+        # Get the raw HTTP response
+        async with httpx.AsyncClient(base_url=self._client.base_url, headers=self._client.default_headers, timeout=self._client.timeout) as http_client:
+            http_response = await http_client.post("/workspaces", json={})
+            response_data = http_response.json()
+        
+        # Extract workspace data from nested response
+        if isinstance(response_data, dict) and "workspace" in response_data:
+            workspace_data = response_data["workspace"]
+        else:
+            workspace_data = response_data
+            
+        # Convert to WorkspaceInfo model
+        return WorkspaceInfo.model_validate(workspace_data)
 
     async def retrieve(
         self,

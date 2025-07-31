@@ -24,7 +24,7 @@ class WorkspaceInfo(BaseModel):
     session_id: str
     """Unique session identifier"""
 
-    status: Literal["running", "stopped", "error"]
+    status: Literal["running", "stopped", "error", "ready"]
     """Current status of the workspace"""
 
     db_path: Optional[str] = None
