@@ -182,13 +182,28 @@ class WorkspaceResource(SyncAPIResource):
         """
         if not session_id:
             raise ValueError(f"Expected a non-empty value for `session_id` but received {session_id!r}")
-        return self._delete(
-            f"/workspace/{session_id}",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=WorkspaceDeleteResponse,
-        )
+        # Use the workspace manager's current workspace deletion endpoint
+        import httpx
+        
+        # Build the request manually to handle workspace manager format
+        try:
+            with httpx.Client(base_url=self._client.base_url, headers=self._client.default_headers, timeout=self._client.timeout) as http_client:
+                http_response = http_client.delete("/workspaces/current")
+                response_data = http_response.json()
+            
+            # Return the response in expected format
+            from ...types.workspace_delete_response import WorkspaceDeleteResponse
+            return WorkspaceDeleteResponse.model_validate(response_data)
+            
+        except Exception as e:
+            # Fallback: try the original endpoint with plural
+            return self._delete(
+                f"/workspaces/{session_id}",
+                options=make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                cast_to=WorkspaceDeleteResponse,
+            )
 
     def search(
         self,
@@ -356,13 +371,28 @@ class AsyncWorkspaceResource(AsyncAPIResource):
         """
         if not session_id:
             raise ValueError(f"Expected a non-empty value for `session_id` but received {session_id!r}")
-        return await self._delete(
-            f"/workspace/{session_id}",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=WorkspaceDeleteResponse,
-        )
+        # Use the workspace manager's current workspace deletion endpoint
+        import httpx
+        
+        # Build the request manually to handle workspace manager format
+        try:
+            async with httpx.AsyncClient(base_url=self._client.base_url, headers=self._client.default_headers, timeout=self._client.timeout) as http_client:
+                http_response = await http_client.delete("/workspaces/current")
+                response_data = http_response.json()
+            
+            # Return the response in expected format
+            from ...types.workspace_delete_response import WorkspaceDeleteResponse
+            return WorkspaceDeleteResponse.model_validate(response_data)
+            
+        except Exception as e:
+            # Fallback: try the original endpoint with plural
+            return await self._delete(
+                f"/workspaces/{session_id}",
+                options=make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                cast_to=WorkspaceDeleteResponse,
+            )
 
     async def search(
         self,
