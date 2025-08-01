@@ -1,4 +1,4 @@
 configured_endpoints: 11
 openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/metis%2Fgoogle-workspace-sdk-ea9d16dc7d412a3a0b838469b6ff80af8b2c8042042fe0ee8b8c5eced253c712.yml
 openapi_spec_hash: ac89aa47750b0f0efa9ebcbc5c19297c
-config_hash: c43df0804c2ea2e7376fe8aad632fbd9
+config_hash: a89a57dfda338be78f454e40ea3b3201
