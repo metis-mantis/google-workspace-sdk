@@ -1,6 +1,6 @@
 [project]
 name = "google_workspace_sdk"
-version = "0.0.1"
+version = "0.0.2"
 description = "The official Python library for the google-workspace-sdk API"
 dynamic = ["readme"]
 license = "MIT"
